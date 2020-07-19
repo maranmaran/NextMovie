@@ -3,7 +3,9 @@ using Business.Models;
 using Domain;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,6 +37,12 @@ namespace Business.Services
         public async Task<IEnumerable<Movie>> GetRecommendations(CancellationToken cancellationToken = default)
         {
             var likedMovies = await _context.Movies.ToListAsync(cancellationToken);
+            if (likedMovies == null || likedMovies.Count == 0)
+            {
+                throw new Exception("No movies");
+            }
+
+            var likedMoviesHash = new HashSet<int>(likedMovies.Select(x => x.Id));
 
             var results = new Dictionary<int, Movie>();
 
@@ -44,18 +52,23 @@ namespace Business.Services
 
                 foreach (var recommendation in recommendationsList.Results)
                 {
-                    if (!results.ContainsKey(recommendation.Id))
+                    if (!results.ContainsKey(recommendation.Id) && !likedMoviesHash.Contains(recommendation.Id))
                     {
                         results.Add(recommendation.Id, recommendation);
                     }
                 }
             }
 
-            // do sorts...
-            // do picks...
-            // take top X...
+            // Sort by vote counts - amount of user votes
+            // Sort by vote average - average grade of user votes
+            // Sort by popularity - best user rated movies...most popular ones first
+            var recommendedMovies = results.Values.ToList();
+            recommendedMovies
+                .OrderBy(x => x.VoteCount)
+                .ThenBy(x => x.VoteAverage)
+                .ThenBy(x => x.Popularity);
 
-            return results.Values;
+            return recommendedMovies.Take(20);
         }
     }
 }

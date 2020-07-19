@@ -42,8 +42,9 @@ namespace API
             });
 
             services.AddTransient<ApplicationDbContext>();
+            services.AddHttpClient();
 
-            services.RegisterServices();
+            services.RegisterServices(Configuration);
             services.ConfigureAutomapper();
 
             services.AddControllers()

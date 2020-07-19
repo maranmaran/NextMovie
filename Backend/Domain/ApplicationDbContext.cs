@@ -3,11 +3,13 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
+using Domain.Entities;
 
 namespace Domain
 {
     public class ApplicationDbContext : DbContext
     {
+        public DbSet<UserMovie> Movies { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }

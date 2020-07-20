@@ -2,6 +2,7 @@
 using Business.Models;
 using Domain;
 using Domain.Entities;
+using Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,11 @@ namespace Business.Services
             _tmdbMovieService = tmdbMovieService;
         }
 
+        public async Task<IEnumerable<UserMovie>> GetAllUserMovies(CancellationToken cancellationToken = default)
+        {
+            return await _context.Movies.ToListAsync(cancellationToken);
+        }
+
         public async Task AddMovie(int movieId, bool liked, CancellationToken cancellationToken = default)
         {
             var userMovie = new UserMovie()
@@ -31,6 +37,28 @@ namespace Business.Services
             };
 
             await _context.AddAsync(userMovie, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task UpdateMovie(int movieId, bool liked, CancellationToken cancellationToken = default)
+        {
+            var movie = await _context.Movies.FirstOrDefaultAsync(x => x.Id == movieId, cancellationToken);
+            if (movie == null)
+                throw new NotFoundException<int>(movieId);
+
+            movie.Liked = liked;
+            _context.Update(movie);
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteMovie(int movieId, CancellationToken cancellationToken = default)
+        {
+            var movie = await _context.Movies.FirstOrDefaultAsync(x => x.Id == movieId, cancellationToken);
+            if (movie == null)
+                throw new NotFoundException<int>(movieId);
+
+            _context.Remove(movie);
             await _context.SaveChangesAsync(cancellationToken);
         }
 

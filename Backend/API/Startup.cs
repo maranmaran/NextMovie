@@ -34,6 +34,18 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("AllowedCorsPolicy",
+                    builder => builder
+                        .WithOrigins(Configuration.GetSection("CORSAllowedOrigins").Get<string[]>())
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                        .WithExposedHeaders("Content-Disposition")
+                );
+            });
+
             services.AddDbContext<ApplicationDbContext>(o =>
             {
                 o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
@@ -125,6 +137,7 @@ namespace API
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseCors("AllowedCorsPolicy");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

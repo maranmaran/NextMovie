@@ -2,14 +2,14 @@
 
 namespace Infrastructure.Exceptions
 {
-    public class NotFoundException : Exception
+    public class NotFoundException<T> : Exception where T : struct
     {
-        public NotFoundException(Guid id, string message, Exception ex = null)
+        public NotFoundException(T id, string message, Exception ex = null)
             : base($"Entity not found.\nEntity id: {id}\nMessage: {message}", ex)
         {
         }
 
-        public NotFoundException(Guid id, Exception ex = null)
+        public NotFoundException(T id, Exception ex = null)
             : base($"Entity not found.\nEntity id: {id}", ex)
         {
         }

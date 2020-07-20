@@ -78,6 +78,9 @@
             "browserTarget": "Frontend:build"
           },
           "configurations": {
+            "dev": {
+              "browserTarget": "Frontend:build:dev"
+            },
             "production": {
               "browserTarget": "Frontend:build:production"
             }
@@ -127,6 +130,9 @@
             "devServerTarget": "Frontend:serve"
           },
           "configurations": {
+            "dev": {
+              "browserTarget": "Frontend:serve:dev"
+            },
             "production": {
               "devServerTarget": "Frontend:serve:production"
             }

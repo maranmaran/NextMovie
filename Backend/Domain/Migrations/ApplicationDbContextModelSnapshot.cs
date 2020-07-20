@@ -21,9 +21,7 @@ namespace Domain.Migrations
             modelBuilder.Entity("Domain.Entities.UserMovie", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<bool>("Liked")
                         .HasColumnType("bit");

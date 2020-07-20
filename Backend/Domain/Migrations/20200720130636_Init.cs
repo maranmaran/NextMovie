@@ -10,8 +10,7 @@ namespace Domain.Migrations
                 name: "Movies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(nullable: false),
                     Liked = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>

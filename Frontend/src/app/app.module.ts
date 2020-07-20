@@ -9,17 +9,13 @@ import { MovieService } from './../services/movie.service';
 import { MaterialModule } from './angular-material.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PopularComponent } from './movies/popular/popular.component';
-import { RecommendedComponent } from './movies/recommended/recommended.component';
-import { TopRatedComponent } from './movies/top-rated/top-rated.component';
+import { MovieListComponent } from './movies/movie-list/movie-list.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    TopRatedComponent,
-    PopularComponent,
-    RecommendedComponent,
+    MovieListComponent,
     MaterialElevationDirective
   ],
   imports: [

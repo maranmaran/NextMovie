@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { take } from 'rxjs/operators';
-import { environment } from './../../../environments/environment';
-import { Movie } from './../../../models/movie.model';
-import { PagedResult } from './../../../models/page-result.model';
-import { MovieService } from './../../../services/movie.service';
+import { environment } from '../../../environments/environment';
+import { Movie } from '../../../models/movie.model';
+import { PagedResult } from '../../../models/page-result.model';
+import { MovieService } from '../../../services/movie.service';
 
 @Component({
-  selector: 'app-top-rated',
-  templateUrl: './top-rated.component.html',
-  styleUrls: ['./top-rated.component.scss']
+  selector: 'app-movie-list',
+  templateUrl: './movie-list.component.html',
+  styleUrls: ['./movie-list.component.scss']
 })
-export class TopRatedComponent implements OnInit {
+export class MovieListComponent implements OnInit {
 
   imageUrl = environment.tmdbImagesUrl;
 

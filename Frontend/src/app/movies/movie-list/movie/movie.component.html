@@ -1,0 +1,18 @@
+<mat-card class="card" appMaterialElevation defaultElevation="0" raisedElevation="24" (click)="like.emit(movie)"
+    (dblclick)="dislike.emit(movie)">
+
+    <div class="card-overlay">
+        <i class="user-like far fa-thumbs-up" *ngIf="userWatched && userLiked"></i>
+        <i class="user-like far fa-thumbs-down" *ngIf="userWatched && userDisliked"></i>
+    </div>
+
+    <img class="poster" [ngClass]="{'user-selected': userWatched}" mat-card-image src="{{imageUrl + movie.posterPath}}">
+
+    <mat-card-header class="header">
+        <mat-card-title class="title">
+            {{ movie.title }}
+        </mat-card-title>
+        <mat-card-subtitle *ngIf="!media.isActive('lt-sm')" class="subtitle">Something</mat-card-subtitle>
+    </mat-card-header>
+
+</mat-card>

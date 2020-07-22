@@ -1,40 +1,57 @@
-import { Component, OnInit } from '@angular/core';
-import { MediaObserver } from '@angular/flex-layout';
-import { take } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
-import { Movie } from '../../../models/movie.model';
-import { PagedResult } from '../../../models/page-result.model';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { IPageInfo } from 'ngx-virtual-scroller';
+import { Observable } from 'rxjs';
+import { take, tap } from 'rxjs/operators';
+import { Movie } from 'src/models/movie.model';
+import { AppState } from 'src/ngrx/global-setup.ngrx';
+import { SubSink } from 'subsink';
 import { MovieService } from '../../../services/movie.service';
+import { movies } from './../../../ngrx/movies/movie.selectors';
 
 @Component({
   selector: 'app-movie-list',
   templateUrl: './movie-list.component.html',
   styleUrls: ['./movie-list.component.scss']
 })
-export class MovieListComponent implements OnInit {
+export class MovieListComponent implements OnInit, OnDestroy {
 
-  imageUrl = environment.tmdbImagesUrl;
-
-  movies: Movie[];
-  page: number;
-  totalPages: number;
+  movies$: Observable<Movie[]>;
+  movieCount: number;
 
   // all user movies and whether they liked them or not
   userMovies = new Map<number, boolean>();
-
+  private _subs = new SubSink();
 
   constructor(
     private movieService: MovieService,
-    public media: MediaObserver
+    private store: Store<AppState>
   ) { }
 
   ngOnInit(): void {
+
     this.getUserMovies();
-    this.get();
+    this.getMovies();
+
+    this.movies$ = this.store.select(movies).pipe(tap(movies => this.movieCount = movies.length));
+
+    this._subs.add(
+      // this.onScroll(),
+    )
+  }
+
+  ngOnDestroy() {
+    this._subs.unsubscribe();
   }
 
   search(query: string) {
     throw Error("Not implemented");
+  }
+
+  getMovies() {
+    this.movieService.getMovies()
+      .pipe(take(1))
+      .subscribe();
   }
 
   getUserMovies() {
@@ -44,23 +61,6 @@ export class MovieListComponent implements OnInit {
         (userMovies: { id: number, liked: boolean }[]) => {
           const keyValue = userMovies.map(x => [x.id, x.liked] as [number, boolean]);
           this.userMovies = new Map<number, boolean>(keyValue)
-        },
-        err => console.log(err)
-      )
-  }
-
-  get(page = 1) {
-    if (page == this.totalPages) {
-      throw Error("No more pages");
-    }
-
-    this.movieService.getTopRated(page)
-      .pipe(take(1))
-      .subscribe(
-        (movies: PagedResult<Movie>) => {
-          this.page = movies.page;
-          this.totalPages = movies.totalPages;
-          this.movies = movies.results;
         },
         err => console.log(err)
       )
@@ -127,6 +127,21 @@ export class MovieListComponent implements OnInit {
         _ => this.userMovies.delete(id),
         err => console.log(err)
       );
+  }
+
+  trackByFn(movie: Movie) {
+    return movie.id;
+  }
+
+  fetchMore(event: IPageInfo) {
+
+    if (!this.movieCount || this.movieCount == 0)
+      return;
+
+    if (event.endIndex !== this.movieCount - 1)
+      return;
+
+    this.getMovies();
   }
 
 }

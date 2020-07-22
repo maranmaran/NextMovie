@@ -1,79 +1,37 @@
 .movies-container {
     padding: 1rem;
 
-    .card {
-        position: relative;
-
-        .card-overlay {
-            z-index: 1;
-            position: absolute;
-            right: 0px;
-            height: 100%;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            .user-like {
-                font-size: 200px;
-            }
-
-            .fa-thumbs-up {
-                color: green;
-            }
-            .fa-thumbs-down {
-                color: red;
-            }
-        }
-
-        .user-selected {
-            opacity: 0.3;
-        }
-
-        .header {
-            white-space: nowrap;
-            display: block;
-            width: 100%;
-
-            .title {
-                text-align: center;
-                text-overflow: ellipsis;
-                overflow: hidden;
-            }
-
-            .subtitle {
-                text-overflow: ellipsis;
-                overflow: hidden;
-            }
-        }
-    }
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(250px, 1fr));
 }
 
-// disable image selection on dblClick
-img {
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -o-user-select: none;
-    user-select: none;
+@media (max-width: 600px) {
+    .movies-container {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        grid-template-rows: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}
+// .scroll-container {
+//     height: 100%;
+//     width: 100%;
+//     overflow: scroll;
+
+//     &::-webkit-scrollbar {
+//         width: 0em;
+//         height: 0em;
+//     }
+// }
+
+::-webkit-scrollbar {
+    width: 0em;
+    height: 0em;
 }
 
-// lt - md
-@media (max-width: 599px) {
-    .card {
-        padding-bottom: 5px;
-
-        img {
-            margin-bottom: 0;
-        }
-
-        .header {
-            margin: 0;
-
-            .title {
-                margin: 0;
-                font-size: 12px;
-            }
-        }
-    }
+virtual-scroller {
+    width: 100%;
+    height: 100%;
 }

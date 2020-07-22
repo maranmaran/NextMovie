@@ -42,11 +42,11 @@ namespace API.Controllers
         /// <summary>
         /// Gets recommendations based on user movie preferences
         /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetRecommendations(CancellationToken cancellationToken = default)
+        [HttpGet("{page}")]
+        public async Task<IActionResult> GetRecommendations(int page = 1, CancellationToken cancellationToken = default)
         {
             //var userId = User.Identity.Name;
-            return Ok(await _movieService.GetRecommendations(cancellationToken));
+            return Ok(await _movieService.GetRecommendations(page, cancellationToken));
         }
 
         /// <summary>

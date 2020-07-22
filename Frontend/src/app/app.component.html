@@ -1,8 +1,23 @@
-<mat-toolbar fxLayout="row" fxLayoutALign="center center" fxLayoutGap="1rem">
+<mat-toolbar>
 
-  <span routerLink="/movie-list">Movie list</span>
-  <span routerLink="/user-movies">Your movies</span>
+  <div class="toolbar-row">
 
+    <button mat-raised-button routerLink="/movie-list" *ngIf="activeRoute !== '/movie-list'">Movie
+      list</button>
+    <button mat-raised-button routerLink="/user-movies" *ngIf="activeRoute !== '/user-movies'">Your
+      movies</button>
+
+    <!-- <button mat-stroked-button routerLink="/movie-list" *ngIf="activeRoute !== '/movie-list'"> Movie list </button> -->
+    <!-- <button mat-stroked-button routerLink="/user-movies" *ngIf="activeRoute !== '/user-movies'"> Your movies </button> -->
+
+    <mat-button-toggle-group class="toggle-group" *ngIf="activeRoute === '/movie-list'">
+      <mat-button-toggle [checked]="true" value="top-rated">Top rated</mat-button-toggle>
+      <mat-button-toggle value="popular">Popular</mat-button-toggle>
+      <mat-button-toggle value="random">Random</mat-button-toggle>
+      <mat-button-toggle value="recommended">Recommended</mat-button-toggle>
+    </mat-button-toggle-group>
+
+  </div>
 </mat-toolbar>
 
 <router-outlet></router-outlet>

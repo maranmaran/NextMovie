@@ -15,7 +15,7 @@ export abstract class BaseService {
     }
 
     public handleError(err): Observable<Error> {
-        console.log('API error:', err.message);
+        console.log('API error:', err);
         return throwError(err);
     }
 

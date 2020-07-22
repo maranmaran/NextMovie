@@ -1,35 +1,75 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { catchError, filter, map, switchMap, take } from 'rxjs/operators';
 import { Movie } from 'src/models/movie.model';
 import { PagedResult } from 'src/models/page-result.model';
+import { AppState } from 'src/ngrx/global-setup.ngrx';
+import { moviesFetched, resetPaging } from './../ngrx/movies/movie.actions';
+import { pagingInfo } from './../ngrx/movies/movie.selectors';
 import { BaseService } from './base,service';
 
 @Injectable()
 export class MovieService extends BaseService {
 
+    private _getMoviesEndpoint = 'GetTopRated/';
+
     constructor(
         private httpDI: HttpClient,
+        private store: Store<AppState>
     ) {
         super(httpDI, "Movies");
     }
 
-    getTopRated(page: number = 1) {
-        return this.http
-            .get<PagedResult<Movie>>(this.url + 'GetTopRated/' + page)
-            .pipe(catchError(this.handleError));
+    setMoviesFetchEndpoint(type: 'top-rated' | 'popular' | 'random' | 'recommended') {
+        switch (type) {
+            case 'top-rated':
+                this._getMoviesEndpoint = 'GetTopRated/';
+                break;
+            case 'popular':
+                this._getMoviesEndpoint = 'GetPopular/';
+                break;
+            case 'random':
+                this._getMoviesEndpoint = 'GetRandom/';
+                break;
+            case 'recommended':
+                this._getMoviesEndpoint = 'GetRecommendations/';
+                break;
+        }
+
+        this.store.dispatch(resetPaging());
     }
 
-    getPopular(page: number = 1) {
-        return this.http
-            .get<PagedResult<Movie>>(this.url + 'GetTopRated/' + page)
-            .pipe(catchError(this.handleError));
-    }
+    getMovies() {
+        return this.store.select(pagingInfo)
+            .pipe(
+                take(1),
+                map(info => {
+                    if (info.page == undefined) {
+                        info.page = 0;
+                        info.totalPages = 1;
+                    }
 
-    getRecommendations() {
-        return this.http
-            .get<PagedResult<Movie>>(this.url + 'GetTopRated/')
-            .pipe(catchError(this.handleError));
+                    info.page++;
+
+                    return info;
+                }),
+                filter(info => info.page <= info.totalPages),
+                switchMap(info => this.http.get<PagedResult<Movie>>(this.url + this._getMoviesEndpoint + info.page).pipe(take(1))),
+                catchError(this.handleError),
+                map(result => {
+                    if (!(result instanceof Error)) {
+                        this.store.dispatch(moviesFetched({ entity: result }))
+                    }
+                }),
+                // retryWhen(errors => {
+                //     return errors
+                //         .pipe(
+                //             delayWhen(() => timer(2000)),
+                //             tap(() => console.log('retrying...'))
+                //         );
+                // })
+            )
     }
 
     getUserMovies() {

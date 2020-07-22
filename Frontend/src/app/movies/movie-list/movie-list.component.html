@@ -1,24 +1,14 @@
-<div class="movies-container" gdGap="1rem" gdColumns="repeat(auto-fill, minmax(400px, 1fr)"
-    gdRows="repeat(auto-fill, minmax(400px, 1fr)" gdGap="1rem" gdColumns.lt-sm="repeat(auto-fill, minmax(100px, 1fr)"
-    gdRows.lt-sm="repeat(auto-fill, minmax(100px, 1fr)">
+<virtual-scroller #scroll [items]="(movies$ | async)" (vsEnd)="fetchMore($event)">
+    <!-- <my-custom-component *ngFor="let item of scroll.viewPortItems">
+    </my-custom-component> -->
 
-    <mat-card *ngFor="let movie of movies" class="card" appMaterialElevation defaultElevation="0" raisedElevation="24"
-        (click)="onLikeMovie(movie)" (dblclick)="onDislikeMovie(movie)">
+    <div class="movies-container" #container>
 
-        <div class="card-overlay">
-            <i class="user-like far fa-thumbs-up" *ngIf="userMovies.has(movie.id) && !!userMovies.get(movie.id)"></i>
-            <i class="user-like far fa-thumbs-down" *ngIf="userMovies.has(movie.id) && !userMovies.get(movie.id)"></i>
-        </div>
+        <app-movie *ngFor="let movie of scroll.viewPortItems; trackBy: trackByFn" [movie]="movie"
+            [userWatched]="userMovies.has(movie.id)" [userLiked]="!!userMovies.get(movie.id)"
+            [userDisliked]="!userMovies.get(movie.id)" (like)="onLikeMovie($event)" (dislike)="onDislikeMovie($event)">
+        </app-movie>
 
-        <img class="poster" [ngClass]="{'user-selected': userMovies.has(movie.id)}" mat-card-image
-            src="{{imageUrl + movie.posterPath}}" alt="Photo of a Shiba Inu">
-        <mat-card-header class="header">
-            <mat-card-title class="title">
-                {{ movie.title }}
-            </mat-card-title>
-            <mat-card-subtitle *ngIf="!media.isActive('lt-sm')" class="subtitle">Something</mat-card-subtitle>
-        </mat-card-header>
+    </div>
 
-    </mat-card>
-
-</div>
+</virtual-scroller>

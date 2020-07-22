@@ -1,0 +1,82 @@
+.card {
+    position: relative;
+    padding-top: 0;
+
+    .card-overlay {
+        z-index: 1;
+        position: absolute;
+        right: 0px;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .user-like {
+            font-size: 200px;
+        }
+
+        .fa-thumbs-up {
+            color: green;
+        }
+        .fa-thumbs-down {
+            color: red;
+        }
+    }
+
+    .user-selected {
+        opacity: 0.3;
+    }
+
+    .header {
+        white-space: nowrap;
+        display: block;
+        width: 100%;
+
+        .title {
+            text-align: center;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .subtitle {
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    }
+}
+
+// disable image selection on dblClick
+img {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+// lt - md
+@media (max-width: 599px) {
+    .card {
+        padding-bottom: 5px;
+
+        img {
+            margin-bottom: 0;
+        }
+
+        .card-overlay {
+            .user-like {
+                font-size: 70px;
+            }
+        }
+
+        .header {
+            margin: 0;
+
+            .title {
+                margin: 0;
+                font-size: 12px;
+            }
+        }
+    }
+}
